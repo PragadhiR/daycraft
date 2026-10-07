@@ -9,8 +9,8 @@ import dotenv from 'dotenv';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load .env from backend if exists
-dotenv.config({ path: path.join(__dirname, '../backend/.env') });
+// Load .env from backend
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const config = {
   host: process.env.DB_HOST || '127.0.0.1',
@@ -26,19 +26,19 @@ async function initDatabase() {
   
   try {
     const connection = await mysql.createConnection(config);
-    console.log('Connected successfully to MySQL server.');
+    console.log('✅ Connected successfully to MySQL server.');
 
-    const schemaPath = path.join(__dirname, 'schema.sql');
+    const schemaPath = path.join(__dirname, '../../database/schema.sql');
     const sql = fs.readFileSync(schemaPath, 'utf8');
 
     console.log('Applying schema.sql to daycraft database...');
     await connection.query(sql);
 
-    console.log('Schema and badges seed applied successfully!');
+    console.log('✅ Schema and badges seed applied successfully!');
     await connection.end();
     process.exit(0);
   } catch (error) {
-    console.error('Database initialization failed:', error.message);
+    console.error('❌ Database initialization failed:', error.message);
     if (error.code === 'ER_ACCESS_DENIED_ERROR') {
       console.error('\n--> Hint: Please check your MySQL password and username in backend/.env');
     }

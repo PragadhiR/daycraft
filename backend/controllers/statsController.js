@@ -36,10 +36,16 @@ export async function getDashboardSummary(req, res) {
     const progressPercent = targetRequired > 0 ? Math.min(100, Math.round((completed / targetRequired) * 100)) : 0;
 
     // 4. Today's tasks list
+    
     const [todayTasks] = await pool.query(
-      'SELECT * FROM tasks WHERE user_id = ? AND due_date = ? ORDER BY is_completed ASC, FIELD(priority, "High", "Medium", "Low"), created_at DESC',
-      [userId, todayStr]
-    );
+    `SELECT * FROM tasks
+     WHERE user_id = ? AND due_date = ?
+     ORDER BY is_completed ASC,
+     FIELD(priority, 'High', 'Medium', 'Low'),
+     created_at DESC`,
+     [userId, todayStr]
+     );
+  
 
     // 5. Freeze counts
     const [freezes] = await pool.query(
